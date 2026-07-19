@@ -52,3 +52,6 @@ docker run -p 8000:8000 rag-real
 ⬜ Prompt Construction
 ⬜ LLM Integration
 ⬜ Final Answer Generation
+
+این یک آزمایش برای شاخه توسعه است.
+
