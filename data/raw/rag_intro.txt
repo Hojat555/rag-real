@@ -1,0 +1,19 @@
+Retrieval-Augmented Generation (RAG) is a technique that enhances LLMs by retrieving
+relevant documents from an external knowledge base before generating a response.
+
+RAG Pipeline:
+1. Document Loading: read raw documents from files or databases
+2. Chunking: split documents into smaller overlapping chunks
+3. Embedding: convert chunks into dense vector representations
+4. Vector Store: index and store embeddings for fast similarity search
+5. Retrieval: given a query, find the top-k most similar chunks
+6. Generation: pass retrieved chunks + query to LLM for final answer
+
+Advantages of RAG:
+- Reduces hallucination by grounding responses in real documents
+- Knowledge can be updated without retraining the model
+- Provides citations and source traceability
+- Works well with domain-specific or private data
+
+Common embedding models: sentence-transformers, OpenAI ada-002
+Common vector stores: FAISS, Chroma, Pinecone, Weaviate

@@ -1,0 +1,17 @@
+The Transformer architecture was introduced in the paper "Attention Is All You Need" (2017)
+by Vaswani et al. It revolutionized NLP by replacing recurrent networks with self-attention.
+
+Core components:
+- Self-Attention: allows each token to attend to all other tokens in the sequence
+- Multi-Head Attention: runs multiple attention operations in parallel
+- Positional Encoding: injects position information since transformers have no recurrence
+- Feed-Forward Network: applied independently to each position
+- Layer Normalization and Residual Connections: stabilize training
+
+Popular transformer-based models:
+- BERT (Bidirectional Encoder Representations from Transformers)
+- GPT (Generative Pre-trained Transformer)
+- T5 (Text-to-Text Transfer Transformer)
+- RoBERTa, DistilBERT, ALBERT
+
+Transformers are the backbone of modern large language models (LLMs).
