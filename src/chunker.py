@@ -9,6 +9,8 @@ def chunk_documents(documents:list[dict], max_words: int = 200)-> list[dict]:
     for document in documents:
         text = document["text"]
         source = document["source"]
+        domain = document.get("domain")
+        file_type = document.get("file_type")
         paragraphs = text.split("\n\n")
             
         for chunk_id, paragraph in enumerate(paragraphs):
@@ -28,14 +30,18 @@ def chunk_documents(documents:list[dict], max_words: int = 200)-> list[dict]:
                     chunks.append({
                         "text":sub_text,
                         "source": source,
-                        "chunk_id": f"{chunk_id}_sub_{i //max_words}"
+                        "chunk_id": f"{chunk_id}_sub_{i //max_words}",
+                        "domain": domain,
+                        "file_type": file_type,
                         })
                         
             else : 
                 chunks.append({
                 "text": paragraph_text,
                 "source": source,
-                "chunk_id": str(chunk_id)
+                "chunk_id": str(chunk_id),
+                "domain": domain,
+                "file_type": file_type,
                    }) 
                             
     return chunks
