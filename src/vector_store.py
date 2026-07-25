@@ -19,7 +19,10 @@ class VectorStore:
             {
                 "text": chunk["text"],
                 "source": chunk["source"],
-                "chunk_id": chunk["chunk_id"]
+                "domain": chunk.get("domain"),
+                "file_type": chunk.get("file_type"),
+                "chunk_id": chunk["chunk_id"],
+                
                 
             }
             for chunk in embedded_chunks
