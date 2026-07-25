@@ -23,21 +23,8 @@ class RAGEngine:
 
     def answer(self, question: str, top_k: int = 3, max_distance: float | None = None) -> dict:
         
-        query_chunk = [
-            {"text":  question, 
-              "source": "query", 
-              "chunk_id":"query_1"
-            }
-                       ]
-        embedded_query_list = self.embedder.embed_chunks(query_chunk)
-        
-        query_embedding = embedded_query_list[0]["embedding"]
-        
-        q_arr = np.array(query_embedding)
-        print(f"--- DEBUG: Shape of query_embedding array: {q_arr.shape}")
-        if self.vector_store.index is not None:
-          print(f"--- DEBUG: Dimension of FAISS index (self.d): {self.vector_store.index.d}")
-        
+        query_embedding = self.embedder.embed_query(question)
+    
         retrieved_chunks = self.vector_store.search(
             query_embedding=query_embedding,
             top_k=top_k,
@@ -59,7 +46,16 @@ class RAGEngine:
         )
 
         sources = [
-            chunk["source"] for chunk in retrieved_chunks
+           
+           {
+            "source": chunk["source"],
+            "domain": chunk.get("domain"),
+            "file_type": chunk.get("file_type"),
+            "chunk_id": chunk["chunk_id"],
+            "distance": chunk["distance"],
+           }
+
+            for chunk in retrieved_chunks
         ]
         
         prompt = self.build_prompt(question, context)
