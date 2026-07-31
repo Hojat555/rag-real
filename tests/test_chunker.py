@@ -49,7 +49,7 @@ def test_splits_large_paragraph_without_losing_words():
     ]
     
     
-    result = chunk_documents(documents, max_words = 2)
+    result = chunk_documents(documents, max_words = 2, overlap_words=0)
     
     expected = [
         {
@@ -76,6 +76,23 @@ def test_splits_large_paragraph_without_losing_words():
     ]
     
     assert expected == result
+
+def test_large_paragraph_has_overlap():
+    documents = [{
+        "text": "one two three four five six seven eight",
+        "source": "sample.txt",
+        "domain": "test",
+        "file_type": ".txt"
+    }]
+
+    chunks = chunk_documents(
+        documents,
+        max_words=5,
+        overlap_words=2
+    )
+
+    assert chunks[0]["text"] == "one two three four five"
+    assert chunks[1]["text"] == "four five six seven eight"
 
     
     
