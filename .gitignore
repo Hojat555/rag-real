@@ -5,3 +5,5 @@ __pycache__/
 .env
 .DS_Store
 *.log
+data/index/vectors.faiss
+data/index/metadata.json

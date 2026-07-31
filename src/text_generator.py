@@ -5,7 +5,7 @@ class TextGenerator:
     def __init__(self):
         self.generator = pipeline(
             "text2text-generation",
-            model="google/flan-t5-small"
+            model="google/flan-t5-base"
         )
 
     def generate(self, prompt: str) -> str:

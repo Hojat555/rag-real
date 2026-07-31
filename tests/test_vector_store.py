@@ -22,7 +22,8 @@ def test_search_does_not_return_more_results_than_vectors():
     
     results = store.search(
         query_embedding=[0.0, 0.0],
-        top_k = 3
+        top_k = 3,
+        max_distance=10
     )
     
     assert len(results) == 2
@@ -94,7 +95,75 @@ def test_search_preserves_metadata():
     assert result[0]["domain"] == "artificial_intelligence"
     assert result[0]["file_type"] == ".txt"
     assert result[0]["chunk_id"] == "0"
-    assert isinstance(result[0]["distance"], float)  
+    assert isinstance(result[0]["distance"], float)
+
+def test_search_filters_results_by_max_distance():
+    store = VectorStore()
+    
+    embeddings = [
+        {
+          "embedding": [0.0, 0.0],
+          "text": "close result",
+          "source": "test.txt",
+          "chunk_id": "0" 
+        },
+        
+        {
+            "embedding": [0.5, 0.5],
+            "text": "medium result",
+            "source": "test.txt",
+            "chunk_id": "1"  
+        },
+        
+        {
+            "embedding": [5.0, 5.0],
+            "text": "max result",
+            "source": "test.txt",
+            "chunk_id": "2" 
+        }
+        
+    ] 
+    store.add_embeddings(embeddings)
+    query_embedding = [0.0,0.0]
+    
+    results = store.search(
+        query_embedding=query_embedding,
+        top_k=3,
+        max_distance=1.2
+    )
+    
+    assert len(results) == 2
+    
+    
+    returned_texts = [
+         result["text"]
+        for result in results
+    ]
+
+    assert "close result" in returned_texts
+    assert "medium result" in returned_texts
+    assert "far result" not in returned_texts
+
+def test_save_creates_index_and_metadata_files(tmp_path):
+    store = VectorStore()
+
+    embeddings = [
+        {
+            "embedding": [0.0, 0.0],
+            "text": "Test document",
+            "source": "test.txt",
+            "chunk_id": "0"
+        }
+    ]
+
+    store.add_embeddings(embeddings)
+
+    save_folder = tmp_path / "index"
+
+    store.save(save_folder)
+
+    assert (save_folder / "vectors.faiss").exists()
+    assert (save_folder / "metadata.json").exists()
     
       
       

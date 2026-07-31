@@ -32,9 +32,17 @@ class FakeVectorStore:
 class FakeGenerator:
     def generate(self, prompt):
         return "RAG retrieves information before generating an answer."
+
+
+class EmptyVectorStore:
+    def search(
+        self,
+        query_embedding,
+        top_k=3,
+        max_distance=0.4
+    ):
+        return[]
     
-
-
 
 def test_answer_uses_query_embedding_and_preserves_sources():
     rag = RAGEngine(
@@ -58,3 +66,27 @@ def test_answer_uses_query_embedding_and_preserves_sources():
             "distance": 0.12,
         }
     ]
+
+class GeneratorThatMustNotRun:
+    def generate(self, prompt):
+        raise AssertionError(
+            "generator must not run when no document is retrieved"
+        )
+
+def test_answer_returns_fallback_when_no_document_is_found():
+    rag = RAGEngine(
+        embedder=FakeEmbedder(),
+        vector_store=EmptyVectorStore (),
+        generator=GeneratorThatMustNotRun()
+    )
+
+    
+    result = rag.answer(
+    "What is the capital of Mars?",
+    top_k=1,
+    max_distance=0.4,
+     )
+    assert result["sources"] == []
+
+
+

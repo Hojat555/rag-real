@@ -9,7 +9,11 @@ class RAGEngine:
     
     def build_prompt(self, question: str, context: str) -> str:
         prompt = f"""
-        Use the following context to answer the question.
+        Answer the question using only the provided context.
+        
+        Write a clear and complete answer in 2 to 3 sentences.
+        Do not return an incomplete phrase.
+        Do not use informataion outside the context.
         
        Context:
        {context}
@@ -17,17 +21,20 @@ class RAGEngine:
        Question:
        {question}
 
-       Answer:
-       """
+       Complete Answer:
+       """.strip()
+       
         return prompt
 
     def answer(self, question: str, top_k: int = 3, max_distance: float | None = None) -> dict:
         
         query_embedding = self.embedder.embed_query(question)
+        
     
         retrieved_chunks = self.vector_store.search(
             query_embedding=query_embedding,
             top_k=top_k,
+            max_distance=max_distance,
         )
         
         if not retrieved_chunks:

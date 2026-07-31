@@ -8,26 +8,32 @@ from src.text_generator import TextGenerator
 from src.document_loader import load_documents
 
 
-def build_rag_engine(data_path:Path)->RAGEngine :
-    documents = load_documents(data_path)
-    print(len(documents))
+def build_rag_engine(data_path:Path, index_folder:Path = Path("data/index"))->RAGEngine :
     
-    chunks = chunk_documents(documents)
-    print(len(chunks))
+    embedder = EmbeddingGenerator()
     
-    embedded = EmbeddingGenerator()
-    embedded_chunk = embedded.embed_chunks(chunks)
+    index_file = index_folder/ "vectors.faiss"
+    metadata_file = index_folder/ "metadata.json"
     
-    vector_store = VectorStore()
-    print(len(embedded_chunk))
-    vector_store.add_embeddings(embedded_chunk)
+    if index_file.exists() and metadata_file.exists():
+        vectorstore = VectorStore.load(index_folder)
     
+    else:
+        documents = load_documents(data_path)
+        chunks = chunk_documents(documents)
+        
+        embededd_chunks = embedder.embed_chunks(chunks)
+        vectorstore = VectorStore()
+        vectorstore.add_embeddings(embededd_chunks)
+        vectorstore.save(index_folder)
+        
     generator = TextGenerator()
+        
+    return RAGEngine(
+        embedder=embedder,
+        vector_store=vectorstore,
+        generator=generator
+        )
+        
+        
     
-    rag = RAGEngine(
-        embedder = embedded,
-        vector_store = vector_store,
-        generator = generator
-    )
-    
-    return rag
