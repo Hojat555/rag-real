@@ -139,6 +139,7 @@ def test_search_filters_results_by_max_distance():
          result["text"]
         for result in results
     ]
+    print(results)
 
     assert "close result" in returned_texts
     assert "medium result" in returned_texts

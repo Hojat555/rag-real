@@ -70,7 +70,7 @@ class VectorStore:
 
         
     def search(self, query_embedding: list[float], top_k: int = 3, 
-               max_distance :float | None = 0.4) -> list[dict]:
+               max_distance :float | None = None) -> list[dict]:
          
        if self.index is None:
            raise RuntimeError("Index is empty. Call add_embeddings first.")
@@ -85,6 +85,8 @@ class VectorStore:
        effective_k = min(top_k, self.index.ntotal)
        
        distances, indices = self.index.search(query_array, effective_k)
+       
+       
        
        results = []
 

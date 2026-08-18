@@ -10,6 +10,7 @@ from src.rag_factory import build_rag_engine
 class AskRequest(BaseModel):
     question : str
     include_sources : bool = False
+    max_distance: float | None = 1.3
 
 @asynccontextmanager
 async def life_span(app: FastAPI):
@@ -26,16 +27,6 @@ def health_check():
 
 
 @app.post('/ask')
-def ask(request :AskRequest):
-    result = app.state.rag.answer(request.question, max_distance = 1.2)
-    response = {
-        "answer" : result["answer"]
-    }
-    if request.include_sources:
-        response["sources"] = list(
-            dict.fromkeys(
-                item["source"]
-                for item in result["sources"]
-            )
-        )
-    return response
+def ask(request: AskRequest):
+    result = app.state.rag.answer(request.question, max_distance = request.max_distance)
+    return result

@@ -13,7 +13,7 @@ class RAGEngine:
         
         Write a clear and complete answer in 2 to 3 sentences.
         Do not return an incomplete phrase.
-        Do not use informataion outside the context.
+        Do not use information outside the context.
         
        Context:
        {context}
@@ -27,6 +27,8 @@ class RAGEngine:
         return prompt
 
     def answer(self, question: str, top_k: int = 3, max_distance: float | None = None) -> dict:
+        
+        
         
         query_embedding = self.embedder.embed_query(question)
         
@@ -66,8 +68,12 @@ class RAGEngine:
         ]
         
         prompt = self.build_prompt(question, context)
+        
+        #print("---- REAL RAG PROMPT:------")
+        #print(prompt)
+        
         answer = self.generator.generate(prompt)
-
+        
         return {
             "question": question,
             "context": context,
